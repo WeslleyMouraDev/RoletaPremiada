@@ -1,32 +1,45 @@
-# React + TypeScript + Vite
+# 🎡 Roleta Premiada Hunter
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Aplicação web de campanha comercial interna para controle de giros na roleta de prêmios, desenvolvida com React, TypeScript, Tailwind CSS e Framer Motion.
 
-Currently, two official plugins are available:
+## 🚀 Como usar localmente
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### Opção 1: Script automático (Windows)
 
-## React Compiler
+Dê duplo clique no arquivo `iniciar.bat` na raiz do projeto.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+O script irá:
+1. Instalar as dependências automaticamente (somente na primeira execução)
+2. Iniciar o servidor local em `http://localhost:5173`
 
-## Expanding the Oxlint configuration
+### Opção 2: Terminal manual
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Acesse `http://localhost:5173` no navegador.
+
+## 🌐 Deploy (Vercel)
+
+O projeto está totalmente configurado para deploy contínuo no Vercel. Basta conectar este repositório no Vercel e o deploy será realizado automaticamente.
+
+## 📋 Funcionalidades
+
+- Cadastro de consultores e controle de matrículas
+- Roleta SVG animada com 20 segmentos
+- Controle de verba total (R$ 800) com aviso de saldo crítico e banner quando esgotada
+- Efeitos sonoros reais usando a Web Audio API nativa
+- Animação festiva de confetes ao ganhar prêmios
+- Exportação de resumo de stories (1080x1920px) em PNG para WhatsApp
+- Persistência automática das campanhas no localStorage
+- Importação e exportação da campanha em arquivos JSON
+
+## 🎯 Tecnologias Utilizadas
+
+- React 18 + TypeScript + Vite
+- Tailwind CSS (Estética Cassino Glassmorphism)
+- Framer Motion (Animações de entrada e rotação)
+- canvas-confetti (Efeitos de confete)
+- html-to-image (Geração do PNG Stories)
