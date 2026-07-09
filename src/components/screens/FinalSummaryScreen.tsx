@@ -130,7 +130,17 @@ export function FinalSummaryScreen({ state, onRestart, onBack }: FinalSummaryScr
         </div>
 
         {/* Card de Exportação PNG (fora da viewport, mas renderizado) */}
-        <div className="sr-only" aria-hidden="true">
+        <div 
+          style={{ 
+            position: 'absolute', 
+            top: '-9999px', 
+            left: '-9999px', 
+            overflow: 'hidden', 
+            width: '1080px', 
+            height: '1920px' 
+          }} 
+          aria-hidden="true"
+        >
           <div
             ref={exportCardRef}
             style={{
@@ -143,9 +153,6 @@ export function FinalSummaryScreen({ state, onRestart, onBack }: FinalSummaryScr
               justifyContent: 'flex-start',
               padding: '80px 60px',
               fontFamily: 'Inter, sans-serif',
-              position: 'fixed',
-              top: '-9999px',
-              left: '-9999px',
             }}
           >
             {/* Header do card */}
