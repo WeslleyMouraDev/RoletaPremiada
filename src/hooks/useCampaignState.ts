@@ -60,7 +60,6 @@ export function useCampaignState() {
       const consultant = prev.consultants.find(c => c.id === consultantId);
       if (!consultant || consultant.pendingSpins <= 0) return prev;
 
-      const prizeAmount = Math.min(result.prizeAmount, prev.availableBalance);
       const actualPrize = result.prizeAmount > 0 && prev.availableBalance >= result.prizeAmount
         ? result.prizeAmount
         : 0;

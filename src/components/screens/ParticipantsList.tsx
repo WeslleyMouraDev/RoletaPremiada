@@ -1,7 +1,5 @@
-import React from 'react';
 import type { Consultant } from '../../types/campaign';
 import { Card } from '../ui/Card';
-import { Button } from '../ui/Button';
 
 type ParticipantsListProps = {
   consultants: Consultant[];

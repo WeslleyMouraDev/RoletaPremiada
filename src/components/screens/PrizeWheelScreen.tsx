@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { GoldTitle } from '../ui/GoldTitle';
 import { Button } from '../ui/Button';

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { GoldTitle } from '../ui/GoldTitle';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';

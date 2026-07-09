@@ -1,8 +1,6 @@
-import React, { useRef } from 'react';
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
 import { GoldTitle } from '../ui/GoldTitle';
 import { Button } from '../ui/Button';
-import { Card } from '../ui/Card';
 import { ParticipantsForm } from './ParticipantsForm';
 import { ParticipantsList } from './ParticipantsList';
 import type { CampaignState } from '../../types/campaign';
