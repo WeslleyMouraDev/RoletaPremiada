@@ -4,9 +4,11 @@ import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import type { CampaignState } from '../../types/campaign';
 import { usePngExport } from '../../hooks/usePngExport';
+import { exportCampaignToExcel } from '../../services/campaignExcelExportService';
 
 type CampaignDashboardProps = {
   state: CampaignState;
+  campaignType: 'graduacao' | 'pos';
   onNext: () => void;
   onBack: () => void;
   onReset: () => void;
@@ -15,6 +17,7 @@ type CampaignDashboardProps = {
 
 export function CampaignDashboard({
   state,
+  campaignType,
   onNext,
   onBack,
   onReset,
@@ -63,6 +66,9 @@ export function CampaignDashboard({
           <div className="flex gap-2">
             <Button variant="secondary" size="sm" onClick={handleExportPng} disabled={isExporting}>
               {isExporting ? '⏳...' : '📸 Exportar PNG'}
+            </Button>
+            <Button variant="secondary" size="sm" onClick={() => exportCampaignToExcel(state, campaignType)}>
+              📊 Exportar Excel
             </Button>
             <Button variant="secondary" size="sm" onClick={exportJson}>
               📤 Exportar Relatório

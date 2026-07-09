@@ -104,6 +104,7 @@ function CampaignManager({ campaignType, onExit }: CampaignManagerProps) {
         {screen === 'dashboard' && (
           <CampaignDashboard
             state={state}
+            campaignType={campaignType}
             onNext={handleDashboardNext}
             onBack={handleDashboardBack}
             onReset={resetCampaign}
@@ -134,6 +135,7 @@ function CampaignManager({ campaignType, onExit }: CampaignManagerProps) {
         {screen === 'final-summary' && (
           <FinalSummaryScreen
             state={state}
+            campaignType={campaignType}
             onRestart={handleFinalRestart}
             onBack={handleFinalBack}
           />

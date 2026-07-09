@@ -5,14 +5,16 @@ import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import { usePngExport } from '../../hooks/usePngExport';
 import type { CampaignState } from '../../types/campaign';
+import { exportCampaignToExcel } from '../../services/campaignExcelExportService';
 
 type FinalSummaryScreenProps = {
   state: CampaignState;
+  campaignType: 'graduacao' | 'pos';
   onRestart: () => void;
   onBack?: () => void;
 };
 
-export function FinalSummaryScreen({ state, onRestart, onBack }: FinalSummaryScreenProps) {
+export function FinalSummaryScreen({ state, campaignType, onRestart, onBack }: FinalSummaryScreenProps) {
   const exportCardRef = useRef<HTMLDivElement>(null);
   const { exportPng, isExporting } = usePngExport();
 
@@ -118,6 +120,14 @@ export function FinalSummaryScreen({ state, onRestart, onBack }: FinalSummaryScr
             className="flex-1 sm:flex-none"
           >
             {isExporting ? '⏳ Exportando...' : '📸 Exportar PNG (WhatsApp)'}
+          </Button>
+          <Button
+            variant="secondary"
+            size="lg"
+            onClick={() => exportCampaignToExcel(state, campaignType)}
+            className="flex-1 sm:flex-none"
+          >
+            📊 Exportar Excel
           </Button>
           <Button
             variant="danger"
