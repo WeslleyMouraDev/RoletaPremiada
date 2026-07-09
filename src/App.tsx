@@ -75,61 +75,69 @@ export default function App() {
   const handleFinalBack = () => setScreen('dashboard');
 
   return (
-    <>
-      {screen === 'start' && (
-        <StartScreen onStart={handleStart} />
+    <div className="min-h-screen bg-bg flex flex-col">
+      {state.availableBalance === 0 && (
+        <div className="bg-orange text-white text-center py-2 px-4 text-xs font-black tracking-wider uppercase z-50 flex items-center justify-center gap-2 shadow-lg animate-pulse">
+          <span>⚠️</span> Verba de prêmios esgotada! Os próximos giros não pagarão prêmios em dinheiro.
+        </div>
       )}
 
-      {screen === 'participants' && (
-        <ParticipantsScreen
-          state={state}
-          addConsultant={addConsultant}
-          removeConsultant={removeConsultant}
-          exportJson={exportJson}
-          importJson={importJson}
-          onClearData={clearData}
-          onNext={handleParticipantsNext}
-          onBack={handleParticipantsBack}
-        />
-      )}
+      <div className="flex-1 flex flex-col">
+        {screen === 'start' && (
+          <StartScreen onStart={handleStart} />
+        )}
 
-      {screen === 'dashboard' && (
-        <CampaignDashboard
-          state={state}
-          onNext={handleDashboardNext}
-          onBack={handleDashboardBack}
-          onReset={resetCampaign}
-          exportJson={exportJson}
-        />
-      )}
+        {screen === 'participants' && (
+          <ParticipantsScreen
+            state={state}
+            addConsultant={addConsultant}
+            removeConsultant={removeConsultant}
+            exportJson={exportJson}
+            importJson={importJson}
+            onClearData={clearData}
+            onNext={handleParticipantsNext}
+            onBack={handleParticipantsBack}
+          />
+        )}
 
-      {screen === 'spin-queue' && (
-        <SpinQueueScreen
-          state={state}
-          onSpin={handleGoToWheel}
-          onSkip={handleSkipSpin}
-          onBack={handleSpinQueueBack}
-          onFinishCampaign={handleSpinQueueFinish}
-        />
-      )}
+        {screen === 'dashboard' && (
+          <CampaignDashboard
+            state={state}
+            onNext={handleDashboardNext}
+            onBack={handleDashboardBack}
+            onReset={resetCampaign}
+            exportJson={exportJson}
+          />
+        )}
 
-      {screen === 'wheel' && currentConsultant && (
-        <PrizeWheelScreen
-          consultant={currentConsultant}
-          segments={state.wheelConfig}
-          availableBalance={state.availableBalance}
-          onSpinComplete={handleSpinComplete}
-          onBack={handleWheelBack}
-        />
-      )}
+        {screen === 'spin-queue' && (
+          <SpinQueueScreen
+            state={state}
+            onSpin={handleGoToWheel}
+            onSkip={handleSkipSpin}
+            onBack={handleSpinQueueBack}
+            onFinishCampaign={handleSpinQueueFinish}
+          />
+        )}
 
-      {screen === 'final-summary' && (
-        <FinalSummaryScreen
-          state={state}
-          onRestart={handleFinalRestart}
-          onBack={handleFinalBack}
-        />
-      )}
+        {screen === 'wheel' && currentConsultant && (
+          <PrizeWheelScreen
+            consultant={currentConsultant}
+            segments={state.wheelConfig}
+            availableBalance={state.availableBalance}
+            onSpinComplete={handleSpinComplete}
+            onBack={handleWheelBack}
+          />
+        )}
+
+        {screen === 'final-summary' && (
+          <FinalSummaryScreen
+            state={state}
+            onRestart={handleFinalRestart}
+            onBack={handleFinalBack}
+          />
+        )}
+      </div>
 
       {/* ResultModal é global — aparece por cima de qualquer tela */}
       <ResultModal
@@ -139,6 +147,6 @@ export default function App() {
         availableBalance={state.availableBalance}
         onContinue={handleResultContinue}
       />
-    </>
+    </div>
   );
 }
