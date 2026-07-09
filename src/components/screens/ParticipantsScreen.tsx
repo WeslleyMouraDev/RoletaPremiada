@@ -40,8 +40,9 @@ export function ParticipantsScreen({
     try {
       await importJson(file);
       alert('Campanha importada com sucesso!');
-    } catch (err: any) {
-      alert(err.message || 'Erro ao importar arquivo.');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao importar arquivo.';
+      alert(errorMessage);
     }
     e.target.value = ''; // Reset input
   };
