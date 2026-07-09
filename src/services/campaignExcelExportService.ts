@@ -49,6 +49,14 @@ export async function exportCampaignToExcel(state: CampaignState, campaignType: 
   // Estilização do cabeçalho da tabela (linha 4)
   const headerRow = worksheet.getRow(4);
   headerRow.height = 28;
+  headerRow.values = [
+    'Posição',
+    'Consultor',
+    'Matrículas (Giros Totais)',
+    'Giros Efetuados',
+    'Giros Pendentes',
+    'Total em Prêmios'
+  ];
   headerRow.eachCell((cell) => {
     cell.font = { name: 'Arial', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
     cell.fill = {
