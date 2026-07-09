@@ -9,8 +9,13 @@ import { ResultModal } from './components/screens/ResultModal';
 import { FinalSummaryScreen } from './components/screens/FinalSummaryScreen';
 import type { AppScreen, Consultant, WheelSegment } from './types/campaign';
 
-export default function App() {
-  const [screen, setScreen] = useState<AppScreen>('start');
+type CampaignManagerProps = {
+  campaignType: 'graduacao' | 'pos';
+  onExit: () => void;
+};
+
+function CampaignManager({ campaignType, onExit }: CampaignManagerProps) {
+  const [screen, setScreen] = useState<AppScreen>('participants'); // Entra direto no cadastro após escolher tipo
   const [currentConsultant, setCurrentConsultant] = useState<Consultant | null>(null);
   const [lastResult, setLastResult] = useState<WheelSegment | null>(null);
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
@@ -26,13 +31,11 @@ export default function App() {
     importJson,
     clearData,
     resetCampaign,
-  } = useCampaignState();
+  } = useCampaignState(campaignType);
 
   // Handlers de navegação
-  const handleStart = () => setScreen('participants');
-
   const handleParticipantsNext = () => setScreen('dashboard');
-  const handleParticipantsBack = () => setScreen('start');
+  const handleParticipantsBack = () => onExit(); // Voltar da config vai para seleção inicial
 
   const handleDashboardNext = () => setScreen('spin-queue');
   const handleDashboardBack = () => setScreen('participants');
@@ -70,7 +73,7 @@ export default function App() {
 
   const handleFinalRestart = () => {
     resetCampaign();
-    setScreen('start');
+    onExit(); // Volta para tela inicial de seleção
   };
 
   const handleFinalBack = () => setScreen('dashboard');
@@ -82,12 +85,8 @@ export default function App() {
           <span>⚠️</span> Verba de prêmios esgotada! Os próximos giros não pagarão prêmios em dinheiro.
         </div>
       )}
-
+      
       <div className="flex-1 flex flex-col">
-        {screen === 'start' && (
-          <StartScreen onStart={handleStart} />
-        )}
-
         {screen === 'participants' && (
           <ParticipantsScreen
             state={state}
@@ -141,7 +140,6 @@ export default function App() {
         )}
       </div>
 
-      {/* ResultModal é global — aparece por cima de qualquer tela */}
       <ResultModal
         isOpen={isResultModalOpen}
         result={lastResult}
@@ -150,5 +148,22 @@ export default function App() {
         onContinue={handleResultContinue}
       />
     </div>
+  );
+}
+
+export default function App() {
+  const [campaignType, setCampaignType] = useState<'graduacao' | 'pos' | null>(null);
+
+  if (campaignType === null) {
+    return <StartScreen onSelectCampaign={setCampaignType} />;
+  }
+
+  // Remonta todo o CampaignManager quando altera o tipo, recarregando localStorage do zero
+  return (
+    <CampaignManager
+      key={campaignType}
+      campaignType={campaignType}
+      onExit={() => setCampaignType(null)}
+    />
   );
 }
