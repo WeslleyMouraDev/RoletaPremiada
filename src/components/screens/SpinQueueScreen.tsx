@@ -63,17 +63,37 @@ export function SpinQueueScreen({
             <Card className="max-w-md p-8 flex flex-col items-center">
               <span className="text-6xl mb-6">🏁</span>
               <h3 className="text-2xl font-bold text-white mb-2">Fila Concluída!</h3>
-              <p className="text-muted text-sm mb-8">
-                Todos os consultores da lista já realizaram seus giros ou a fila está vazia.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 w-full">
-                <Button variant="secondary" onClick={onBack} fullWidth>
-                  Voltar ao Painel
-                </Button>
-                <Button onClick={onFinishCampaign} fullWidth>
-                  Ver Resumo Final
-                </Button>
-              </div>
+              
+              {availableBalance > 0 ? (
+                <>
+                  <p className="text-muted text-sm mb-8">
+                    Todos os consultores cadastrados realizaram seus giros, mas **ainda resta saldo de prêmios** ({new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(availableBalance)}). 
+                    Cadastre novos consultores ou adicione mais matrículas para continuar girando e distribuir o saldo restante!
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 w-full">
+                    <Button onClick={onBack} fullWidth>
+                      ➕ Cadastrar / Adicionar Giros
+                    </Button>
+                    <Button variant="secondary" onClick={onFinishCampaign} disabled={true} className="opacity-40 cursor-not-allowed" fullWidth title="A verba deve ser esgotada para ver o resumo final">
+                      Ver Resumo Final
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-muted text-sm mb-8">
+                    Toda a verba da campanha comercial foi distribuída e todos os giros foram concluídos!
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 w-full">
+                    <Button variant="secondary" onClick={onBack} fullWidth>
+                      Voltar ao Painel
+                    </Button>
+                    <Button onClick={onFinishCampaign} fullWidth>
+                      Ver Resumo Final
+                    </Button>
+                  </div>
+                </>
+              )}
             </Card>
           </div>
         ) : (
