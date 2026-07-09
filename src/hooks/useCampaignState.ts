@@ -3,10 +3,11 @@ import { useLocalStorage } from './useLocalStorage';
 import { createInitialState } from '../services/campaignStorageService';
 import { exportCampaignJson, importCampaignJson } from '../services/campaignExportService';
 import type { CampaignState, Consultant, SpinHistoryItem, WheelSegment } from '../types/campaign';
-import { STORAGE_KEY } from '../constants/wheelConfig';
 
-export function useCampaignState() {
-  const [state, setState] = useLocalStorage<CampaignState>(STORAGE_KEY, createInitialState());
+
+export function useCampaignState(campaignType: 'graduacao' | 'pos') {
+  const storageKey = `roleta_premiada_hunter_${campaignType}`;
+  const [state, setState] = useLocalStorage<CampaignState>(storageKey, createInitialState(campaignType));
 
   const addConsultant = useCallback((name: string, enrollments: number) => {
     setState(prev => {
@@ -147,12 +148,12 @@ export function useCampaignState() {
   }, [setState]);
 
   const clearData = useCallback(() => {
-    setState(createInitialState());
-  }, [setState]);
+    setState(createInitialState(campaignType));
+  }, [setState, campaignType]);
 
   const resetCampaign = useCallback(() => {
-    setState(createInitialState());
-  }, [setState]);
+    setState(createInitialState(campaignType));
+  }, [setState, campaignType]);
 
   return {
     state,

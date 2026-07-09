@@ -1,9 +1,13 @@
 import { STORAGE_KEY, WHEEL_SEGMENTS, INITIAL_BUDGET } from '../constants/wheelConfig';
 import type { CampaignState } from '../types/campaign';
 
-export function createInitialState(): CampaignState {
+export function createInitialState(campaignType?: 'graduacao' | 'pos'): CampaignState {
+  const campaignName = campaignType === 'pos'
+    ? 'Roleta Premiada Hunter - Pós-Graduação'
+    : 'Roleta Premiada Hunter - Graduação';
+
   return {
-    campaignName: 'Roleta Premiada Hunter',
+    campaignName,
     initialBudget: INITIAL_BUDGET,
     availableBalance: INITIAL_BUDGET,
     totalPaidPrizes: 0,
