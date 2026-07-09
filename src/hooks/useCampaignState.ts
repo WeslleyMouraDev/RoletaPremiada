@@ -55,6 +55,37 @@ export function useCampaignState() {
     }));
   }, [setState]);
 
+  const updateEnrollments = useCallback((id: string, delta: number) => {
+    setState(prev => {
+      const consultant = prev.consultants.find(c => c.id === id);
+      if (!consultant) return prev;
+
+      let newEnrollments = consultant.totalEnrollments + delta;
+      
+      // Não permite reduzir abaixo de giros já concluídos
+      if (newEnrollments < consultant.completedSpins) {
+        newEnrollments = consultant.completedSpins;
+      }
+
+      const diff = newEnrollments - consultant.totalEnrollments;
+
+      return {
+        ...prev,
+        consultants: prev.consultants.map(c =>
+          c.id === id
+            ? {
+                ...c,
+                totalEnrollments: newEnrollments,
+                totalSpins: c.totalSpins + diff,
+                pendingSpins: Math.max(0, c.pendingSpins + diff),
+              }
+            : c
+        ),
+        updatedAt: new Date().toISOString(),
+      };
+    });
+  }, [setState]);
+
   const performSpin = useCallback((consultantId: string, result: WheelSegment) => {
     setState(prev => {
       const consultant = prev.consultants.find(c => c.id === consultantId);
@@ -127,6 +158,7 @@ export function useCampaignState() {
     state,
     addConsultant,
     removeConsultant,
+    updateEnrollments,
     performSpin,
     skipSpin,
     exportJson,
