@@ -1,8 +1,9 @@
-
+import { useRef } from 'react';
 import { GoldTitle } from '../ui/GoldTitle';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import type { CampaignState } from '../../types/campaign';
+import { usePngExport } from '../../hooks/usePngExport';
 
 type CampaignDashboardProps = {
   state: CampaignState;
@@ -20,6 +21,8 @@ export function CampaignDashboard({
   exportJson,
 }: CampaignDashboardProps) {
   const { initialBudget, availableBalance, totalPaidPrizes, consultants, spinHistory } = state;
+  const exportCardRef = useRef<HTMLDivElement>(null);
+  const { exportPng, isExporting } = usePngExport();
 
   // Ordena consultores pelo valor total de prêmios recebidos (Ranking)
   const ranking = [...consultants].sort((a, b) => b.totalPrizeAmount - a.totalPrizeAmount);
@@ -27,6 +30,12 @@ export function CampaignDashboard({
   // Formata valores monetários em R$
   const formatCurrency = (val: number) => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+  };
+
+  const handleExportPng = async () => {
+    if (!exportCardRef.current) return;
+    const date = new Date().toISOString().split('T')[0];
+    await exportPng(exportCardRef.current, `painel-campanha-hunter-${date}.png`);
   };
 
   const handleResetClick = () => {
@@ -52,6 +61,9 @@ export function CampaignDashboard({
           </div>
           
           <div className="flex gap-2">
+            <Button variant="secondary" size="sm" onClick={handleExportPng} disabled={isExporting}>
+              {isExporting ? '⏳...' : '📸 Exportar PNG'}
+            </Button>
             <Button variant="secondary" size="sm" onClick={exportJson}>
               📤 Exportar Relatório
             </Button>
@@ -160,6 +172,126 @@ export function CampaignDashboard({
           </Button>
         </div>
         
+        {/* Card de Exportação PNG (fora da viewport, mas renderizado) */}
+        <div 
+          style={{ 
+            position: 'absolute', 
+            top: '-9999px', 
+            left: '-9999px', 
+            overflow: 'hidden', 
+            width: '1080px', 
+            height: '1920px' 
+          }} 
+          aria-hidden="true"
+        >
+          <div
+            ref={exportCardRef}
+            style={{
+              width: 1080,
+              height: 1920,
+              backgroundColor: '#0B0F1A',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              padding: '80px 60px',
+              fontFamily: 'Inter, sans-serif',
+            }}
+          >
+            {/* Header do card */}
+            <div style={{ textAlign: 'center', marginBottom: 50 }}>
+              <div style={{ fontSize: 80, marginBottom: 20 }}>🎡</div>
+              <h1 style={{
+                fontSize: 64,
+                fontWeight: 900,
+                background: 'linear-gradient(135deg, #FFF5D1, #FFD166, #D4A017)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                margin: 0,
+                lineHeight: 1.2,
+              }}>
+                Roleta Premiada
+              </h1>
+              <h2 style={{ fontSize: 48, fontWeight: 700, color: '#FFFFFF', marginTop: 8 }}>HUNTER</h2>
+              <p style={{ color: '#9CA3AF', fontSize: 28, marginTop: 20 }}>Painel de Resultados</p>
+            </div>
+
+            {/* Métricas */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: 24,
+              width: '100%',
+              marginBottom: 50,
+            }}>
+              {[
+                { label: 'Verba Inicial', value: formatCurrency(initialBudget), color: '#FFFFFF' },
+                { label: 'Prêmios Pagos', value: formatCurrency(totalPaidPrizes), color: '#22C55E' },
+                { label: 'Saldo em Caixa', value: formatCurrency(availableBalance), color: availableBalance <= 50 ? '#F15A24' : '#FFD166' },
+                { label: 'Total de Giros', value: `${spinHistory.length}`, color: '#7B2CFF' },
+              ].map(m => (
+                <div key={m.label} style={{
+                  backgroundColor: '#1E2A36',
+                  borderRadius: 24,
+                  padding: '36px 32px',
+                  textAlign: 'center',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                }}>
+                  <span style={{ color: '#9CA3AF', fontSize: 22, display: 'block', marginBottom: 8 }}>{m.label}</span>
+                  <span style={{ color: m.color, fontSize: 44, fontWeight: 900 }}>{m.value}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Top 5 Ranking */}
+            <div style={{ width: '100%', flex: 1, overflow: 'hidden' }}>
+              <h3 style={{ color: '#FFD166', fontSize: 36, fontWeight: 800, marginBottom: 24, textAlign: 'center' }}>
+                🏆 Ranking de Prêmios (Parcial)
+              </h3>
+              {ranking.length === 0 ? (
+                <p style={{ color: '#9CA3AF', fontSize: 24, textAlign: 'center', marginTop: 40 }}>Nenhum giro realizado.</p>
+              ) : (
+                ranking.slice(0, 5).map((c, i) => (
+                  <div key={c.id} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    backgroundColor: i === 0 ? 'rgba(255,209,102,0.08)' : 'rgba(255,255,255,0.02)',
+                    borderRadius: 20,
+                    padding: '28px 32px',
+                    marginBottom: 16,
+                    border: i === 0 ? '1px solid rgba(255,209,102,0.2)' : '1px solid rgba(255,255,255,0.05)',
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                      <span style={{
+                        width: 52,
+                        height: 52,
+                        borderRadius: '50%',
+                        backgroundColor: i === 0 ? '#FFD166' : i === 1 ? 'rgba(255,255,255,0.3)' : i === 2 ? '#CD7F32' : 'rgba(255,255,255,0.05)',
+                        color: i === 0 ? '#0B0F1A' : '#FFFFFF',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: 24,
+                        fontWeight: 900,
+                      }}>{i + 1}</span>
+                      <span style={{ color: '#FFFFFF', fontSize: 30, fontWeight: 700 }}>{c.name}</span>
+                    </div>
+                    <span style={{ color: c.totalPrizeAmount > 0 ? '#22C55E' : '#9CA3AF', fontSize: 30, fontWeight: 900 }}>
+                      {formatCurrency(c.totalPrizeAmount)}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Footer */}
+            <p style={{ color: '#9CA3AF', fontSize: 22, marginTop: 40, textAlign: 'center' }}>
+              Painel gerado em {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+            </p>
+          </div>
+        </div>
+
       </div>
     </div>
   );
