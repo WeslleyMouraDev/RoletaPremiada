@@ -1,4 +1,4 @@
-import { STORAGE_KEY, WHEEL_SEGMENTS, INITIAL_BUDGET } from '../constants/wheelConfig';
+import { STORAGE_KEY, WHEEL_SEGMENTS, INITIAL_BUDGET_GRADUACAO, INITIAL_BUDGET_POS } from '../constants/wheelConfig';
 import type { CampaignState } from '../types/campaign';
 
 export function createInitialState(campaignType?: 'graduacao' | 'pos'): CampaignState {
@@ -6,10 +6,12 @@ export function createInitialState(campaignType?: 'graduacao' | 'pos'): Campaign
     ? 'Roleta Premiada Hunter - Pós-Graduação'
     : 'Roleta Premiada Hunter - Graduação';
 
+  const budget = campaignType === 'pos' ? INITIAL_BUDGET_POS : INITIAL_BUDGET_GRADUACAO;
+
   return {
     campaignName,
-    initialBudget: INITIAL_BUDGET,
-    availableBalance: INITIAL_BUDGET,
+    initialBudget: budget,
+    availableBalance: budget,
     totalPaidPrizes: 0,
     consultants: [],
     spinHistory: [],

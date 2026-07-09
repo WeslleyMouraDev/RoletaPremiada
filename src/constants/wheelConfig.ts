@@ -1,6 +1,7 @@
 import type { WheelSegment } from '../types/campaign';
 
-export const INITIAL_BUDGET = 800;
+export const INITIAL_BUDGET_GRADUACAO = 1000;
+export const INITIAL_BUDGET_POS = 800;
 export const STORAGE_KEY = 'roleta_premiada_hunter_state';
 
 // 20 segmentos fixos: 13×zero, 4×R$20, 1×R$30, 1×R$50, 1×R$100
