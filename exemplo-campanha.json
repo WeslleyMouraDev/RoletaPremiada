@@ -1,0 +1,60 @@
+{
+  "campaignName": "Campanha Hunter Junho",
+  "initialBudget": 800,
+  "availableBalance": 800,
+  "totalPaidPrizes": 0,
+  "consultants": [
+    {
+      "id": "c1",
+      "name": "Maria Oliveira",
+      "totalEnrollments": 5,
+      "totalSpins": 5,
+      "completedSpins": 0,
+      "pendingSpins": 5,
+      "totalPrizeAmount": 0
+    },
+    {
+      "id": "c2",
+      "name": "João Souza",
+      "totalEnrollments": 3,
+      "totalSpins": 3,
+      "completedSpins": 0,
+      "pendingSpins": 3,
+      "totalPrizeAmount": 0
+    },
+    {
+      "id": "c3",
+      "name": "Ana Costa",
+      "totalEnrollments": 8,
+      "totalSpins": 8,
+      "completedSpins": 0,
+      "pendingSpins": 8,
+      "totalPrizeAmount": 0
+    }
+  ],
+  "spinHistory": [],
+  "wheelConfig": [
+    { "id": "nf-1",  "label": "Não foi dessa vez", "prizeAmount": 0,   "weight": 1, "color": "#1E2A36", "textColor": "#9CA3AF" },
+    { "id": "r20-1", "label": "R$ 20",             "prizeAmount": 20,  "weight": 1, "color": "#22C55E", "textColor": "#FFFFFF" },
+    { "id": "nf-2",  "label": "Não foi dessa vez", "prizeAmount": 0,   "weight": 1, "color": "#1E2A36", "textColor": "#9CA3AF" },
+    { "id": "nf-3",  "label": "Não foi dessa vez", "prizeAmount": 0,   "weight": 1, "color": "#1E2A36", "textColor": "#9CA3AF" },
+    { "id": "r20-2", "label": "R$ 20",             "prizeAmount": 20,  "weight": 1, "color": "#22C55E", "textColor": "#FFFFFF" },
+    { "id": "nf-4",  "label": "Não foi dessa vez", "prizeAmount": 0,   "weight": 1, "color": "#1E2A36", "textColor": "#9CA3AF" },
+    { "id": "r50-1", "label": "R$ 50",             "prizeAmount": 50,  "weight": 1, "color": "#F15A24", "textColor": "#FFFFFF" },
+    { "id": "nf-5",  "label": "Não foi dessa vez", "prizeAmount": 0,   "weight": 1, "color": "#1E2A36", "textColor": "#9CA3AF" },
+    { "id": "nf-6",  "label": "Não foi dessa vez", "prizeAmount": 0,   "weight": 1, "color": "#1E2A36", "textColor": "#9CA3AF" },
+    { "id": "r20-3", "label": "R$ 20",             "prizeAmount": 20,  "weight": 1, "color": "#22C55E", "textColor": "#FFFFFF" },
+    { "id": "r100",  "label": "R$ 100",            "prizeAmount": 100, "weight": 1, "color": "#7B2CFF", "textColor": "#FFFFFF" },
+    { "id": "nf-7",  "label": "Não foi dessa vez", "prizeAmount": 0,   "weight": 1, "color": "#1E2A36", "textColor": "#9CA3AF" },
+    { "id": "nf-8",  "label": "Não foi dessa vez", "prizeAmount": 0,   "weight": 1, "color": "#1E2A36", "textColor": "#9CA3AF" },
+    { "id": "r30-1", "label": "R$ 30",             "prizeAmount": 30,  "weight": 1, "color": "#FFD166", "textColor": "#0B0F1A" },
+    { "id": "nf-9",  "label": "Não foi dessa vez", "prizeAmount": 0,   "weight": 1, "color": "#1E2A36", "textColor": "#9CA3AF" },
+    { "id": "r20-4", "label": "R$ 20",             "prizeAmount": 20,  "weight": 1, "color": "#22C55E", "textColor": "#FFFFFF" },
+    { "id": "nf-10", "label": "Não foi dessa vez", "prizeAmount": 0,   "weight": 1, "color": "#1E2A36", "textColor": "#9CA3AF" },
+    { "id": "nf-11", "label": "Não foi dessa vez", "prizeAmount": 0,   "weight": 1, "color": "#1E2A36", "textColor": "#9CA3AF" },
+    { "id": "nf-12", "label": "Não foi dessa vez", "prizeAmount": 0,   "weight": 1, "color": "#1E2A36", "textColor": "#9CA3AF" },
+    { "id": "nf-13", "label": "Não foi dessa vez", "prizeAmount": 0,   "weight": 1, "color": "#1E2A36", "textColor": "#9CA3AF" }
+  ],
+  "createdAt": "2026-07-09T12:00:00.000Z",
+  "updatedAt": "2026-07-09T12:00:00.000Z"
+}
