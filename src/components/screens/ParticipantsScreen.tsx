@@ -9,6 +9,7 @@ type ParticipantsScreenProps = {
   state: CampaignState;
   addConsultant: (name: string, enrollments: number) => void;
   removeConsultant: (id: string) => void;
+  updateEnrollments: (id: string, delta: number) => void;
   exportJson: () => void;
   importJson: (file: File) => Promise<void>;
   onClearData: () => void;
@@ -20,6 +21,7 @@ export function ParticipantsScreen({
   state,
   addConsultant,
   removeConsultant,
+  updateEnrollments,
   exportJson,
   importJson,
   onClearData,
@@ -96,6 +98,7 @@ export function ParticipantsScreen({
             <ParticipantsList
               consultants={state.consultants}
               onRemoveConsultant={removeConsultant}
+              onUpdateEnrollments={updateEnrollments}
             />
           </div>
         </div>

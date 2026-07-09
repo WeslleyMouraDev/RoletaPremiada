@@ -19,6 +19,7 @@ export default function App() {
     state,
     addConsultant,
     removeConsultant,
+    updateEnrollments,
     performSpin,
     skipSpin,
     exportJson,
@@ -92,6 +93,7 @@ export default function App() {
             state={state}
             addConsultant={addConsultant}
             removeConsultant={removeConsultant}
+            updateEnrollments={updateEnrollments}
             exportJson={exportJson}
             importJson={importJson}
             onClearData={clearData}

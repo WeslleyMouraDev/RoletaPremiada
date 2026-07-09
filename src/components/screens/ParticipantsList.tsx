@@ -4,9 +4,10 @@ import { Card } from '../ui/Card';
 type ParticipantsListProps = {
   consultants: Consultant[];
   onRemoveConsultant: (id: string) => void;
+  onUpdateEnrollments: (id: string, delta: number) => void;
 };
 
-export function ParticipantsList({ consultants, onRemoveConsultant }: ParticipantsListProps) {
+export function ParticipantsList({ consultants, onRemoveConsultant, onUpdateEnrollments }: ParticipantsListProps) {
   return (
     <Card className="w-full overflow-hidden">
       <div className="flex items-center justify-between mb-4">
@@ -40,7 +41,26 @@ export function ParticipantsList({ consultants, onRemoveConsultant }: Participan
               {consultants.map((c) => (
                 <tr key={c.id} className="text-sm hover:bg-white/[0.02] transition-colors group">
                   <td className="py-4 font-bold text-white max-w-[150px] truncate">{c.name}</td>
-                  <td className="py-4 px-4 text-center font-semibold text-gold">{c.totalEnrollments}</td>
+                  <td className="py-4 px-4 text-center font-semibold text-gold">
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => onUpdateEnrollments(c.id, -1)}
+                        disabled={c.totalEnrollments <= c.completedSpins}
+                        className="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-xs hover:bg-orange/20 hover:text-orange disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-black"
+                      >
+                        -
+                      </button>
+                      <span className="w-8 text-center">{c.totalEnrollments}</span>
+                      <button
+                        type="button"
+                        onClick={() => onUpdateEnrollments(c.id, 1)}
+                        className="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-xs hover:bg-green/20 hover:text-green transition-colors font-black"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </td>
                   <td className="py-4 px-4 text-center">
                     <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
                       c.pendingSpins > 0 ? 'bg-orange/20 text-orange' : 'bg-white/5 text-muted'
