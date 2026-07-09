@@ -1,4 +1,4 @@
-import { STORAGE_KEY, WHEEL_SEGMENTS, INITIAL_BUDGET_GRADUACAO, INITIAL_BUDGET_POS } from '../constants/wheelConfig';
+import { STORAGE_KEY, WHEEL_SEGMENTS_GRADUACAO, WHEEL_SEGMENTS_POS, INITIAL_BUDGET_GRADUACAO, INITIAL_BUDGET_POS } from '../constants/wheelConfig';
 import type { CampaignState } from '../types/campaign';
 
 export function createInitialState(campaignType?: 'graduacao' | 'pos'): CampaignState {
@@ -7,6 +7,7 @@ export function createInitialState(campaignType?: 'graduacao' | 'pos'): Campaign
     : 'Roleta Premiada Hunter - Graduação';
 
   const budget = campaignType === 'pos' ? INITIAL_BUDGET_POS : INITIAL_BUDGET_GRADUACAO;
+  const segments = campaignType === 'pos' ? WHEEL_SEGMENTS_POS : WHEEL_SEGMENTS_GRADUACAO;
 
   return {
     campaignName,
@@ -15,7 +16,7 @@ export function createInitialState(campaignType?: 'graduacao' | 'pos'): Campaign
     totalPaidPrizes: 0,
     consultants: [],
     spinHistory: [],
-    wheelConfig: WHEEL_SEGMENTS,
+    wheelConfig: segments,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
