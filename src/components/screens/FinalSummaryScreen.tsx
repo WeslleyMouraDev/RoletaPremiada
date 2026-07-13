@@ -1,11 +1,13 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { GoldTitle } from '../ui/GoldTitle';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import { usePngExport } from '../../hooks/usePngExport';
 import type { CampaignState } from '../../types/campaign';
-import { exportCampaignToExcel } from '../../services/campaignExcelExportService';
+import { exportCampaignToExcel, generateCampaignExcelBlob } from '../../services/campaignExcelExportService';
+import { generateCampaignJsonBlob } from '../../services/campaignExportService';
+import JSZip from 'jszip';
 
 type FinalSummaryScreenProps = {
   state: CampaignState;
@@ -16,7 +18,11 @@ type FinalSummaryScreenProps = {
 
 export function FinalSummaryScreen({ state, campaignType, onRestart, onBack }: FinalSummaryScreenProps) {
   const exportCardRef = useRef<HTMLDivElement>(null);
-  const { exportPng, isExporting } = usePngExport();
+  const { exportPng, getPngBlob, isExporting } = usePngExport();
+
+  const [isGcModalOpen, setIsGcModalOpen] = useState(false);
+  const [gcName, setGcName] = useState('');
+  const [isZipping, setIsZipping] = useState(false);
 
   const { initialBudget, availableBalance, totalPaidPrizes, consultants, spinHistory } = state;
   const totalSpins = spinHistory.length;
@@ -28,6 +34,59 @@ export function FinalSummaryScreen({ state, campaignType, onRestart, onBack }: F
 
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+
+  const handleExportAll = async () => {
+    if (!gcName.trim()) {
+      alert('Por favor, digite o nome do GC para prosseguir.');
+      return;
+    }
+    if (!exportCardRef.current) return;
+
+    setIsZipping(true);
+    try {
+      // 1. Gera o Blob do PNG
+      const pngBlob = await getPngBlob(exportCardRef.current);
+      
+      // 2. Gera o Blob do Excel
+      const excelBlob = await generateCampaignExcelBlob(state, campaignType);
+
+      // 3. Gera o Blob do JSON
+      const jsonBlob = generateCampaignJsonBlob(state);
+
+      // 4. Cria e gera o ZIP
+      const zip = new JSZip();
+      const campaignUpper = campaignType === 'pos' ? 'PÓS' : 'GRADUAÇÃO';
+      const dateStr = new Date().toISOString().split('T')[0];
+      const cleanGc = gcName.trim().toUpperCase();
+      const gcSuffix = ` - ${cleanGc}`;
+
+      const zipName = `roleta-premiada-${campaignUpper}-hunter-${dateStr}${gcSuffix}.zip`;
+      
+      zip.file(`roleta-premiada-${campaignUpper}-hunter-${dateStr}${gcSuffix}.png`, pngBlob);
+      zip.file(`premiacao-hunter-${campaignType}-${dateStr}${gcSuffix}.xlsx`, excelBlob);
+      zip.file(`roleta-premiada-${campaignType}-hunter-state-${dateStr}${gcSuffix}.json`, jsonBlob);
+      
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      
+      // 5. Download do ZIP
+      const url = window.URL.createObjectURL(zipBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = zipName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      
+      setIsGcModalOpen(false);
+      setGcName('');
+    } catch (err) {
+      console.error('Erro ao gerar o ZIP:', err);
+      alert('Erro ao exportar o pacote ZIP. Tente novamente.');
+    } finally {
+      setIsZipping(false);
+    }
+  };
 
   const handleExportPng = async () => {
     if (!exportCardRef.current) return;
@@ -130,6 +189,14 @@ export function FinalSummaryScreen({ state, campaignType, onRestart, onBack }: F
             📊 Exportar Excel
           </Button>
           <Button
+            variant="secondary"
+            size="lg"
+            onClick={() => setIsGcModalOpen(true)}
+            className="flex-1 sm:flex-none"
+          >
+            📦 Exportar Tudo (ZIP)
+          </Button>
+          <Button
             variant="danger"
             size="lg"
             onClick={handleRestart}
@@ -179,7 +246,9 @@ export function FinalSummaryScreen({ state, campaignType, onRestart, onBack }: F
               }}>
                 Roleta Premiada
               </h1>
-              <h2 style={{ fontSize: 48, fontWeight: 700, color: '#FFFFFF', marginTop: 8 }}>HUNTER</h2>
+              <h2 style={{ fontSize: 48, fontWeight: 700, color: '#FFFFFF', marginTop: 8 }}>
+                {campaignType === 'pos' ? 'PÓS HUNTER' : 'GRADUAÇÃO HUNTER'}
+              </h2>
               <p style={{ color: '#9CA3AF', fontSize: 28, marginTop: 20 }}>Resultado da Campanha</p>
             </div>
 
@@ -254,6 +323,51 @@ export function FinalSummaryScreen({ state, campaignType, onRestart, onBack }: F
             </p>
           </div>
         </div>
+
+      {/* Modal GC para Exportação ZIP */}
+      {isGcModalOpen && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-[#0E1520] border border-white/10 rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl relative">
+            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <span>📦</span> Exportar Pacote Completo (ZIP)
+            </h3>
+            <p className="text-muted text-sm mb-6">
+              Digite o nome do GC (Gerente de Contas) responsável por esta campanha. O nome será incluído no arquivo ZIP e em cada arquivo interno.
+            </p>
+            
+            <input
+              type="text"
+              placeholder="Ex: FERNANDO"
+              value={gcName}
+              onChange={(e) => setGcName(e.target.value)}
+              className="w-full bg-[#1E2A36] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-muted focus:outline-none focus:border-gold/50 mb-6 text-center font-bold uppercase"
+              disabled={isZipping}
+              autoFocus
+            />
+            
+            <div className="flex gap-4">
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setIsGcModalOpen(false);
+                  setGcName('');
+                }}
+                disabled={isZipping}
+                className="flex-1"
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={handleExportAll}
+                disabled={isZipping || !gcName.trim()}
+                className="flex-1"
+              >
+                {isZipping ? '⏳ Gerando ZIP...' : 'Exportar ZIP'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       </div>
     </div>

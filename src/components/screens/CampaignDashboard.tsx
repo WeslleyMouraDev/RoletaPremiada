@@ -218,7 +218,9 @@ export function CampaignDashboard({
               }}>
                 Roleta Premiada
               </h1>
-              <h2 style={{ fontSize: 48, fontWeight: 700, color: '#FFFFFF', marginTop: 8 }}>HUNTER</h2>
+              <h2 style={{ fontSize: 48, fontWeight: 700, color: '#FFFFFF', marginTop: 8 }}>
+                {campaignType === 'pos' ? 'PÓS HUNTER' : 'GRADUAÇÃO HUNTER'}
+              </h2>
               <p style={{ color: '#9CA3AF', fontSize: 28, marginTop: 20 }}>Painel de Resultados</p>
             </div>
 

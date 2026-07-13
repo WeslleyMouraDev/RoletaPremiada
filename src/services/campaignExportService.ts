@@ -1,13 +1,18 @@
 import type { CampaignState } from '../types/campaign';
 import { validateImportedData } from './campaignStorageService';
 
-export function exportCampaignJson(state: CampaignState): void {
+export function generateCampaignJsonBlob(state: CampaignState): Blob {
   const json = JSON.stringify(state, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
+  return new Blob([json], { type: 'application/json' });
+}
+
+export function exportCampaignJson(state: CampaignState): void {
+  const blob = generateCampaignJsonBlob(state);
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `roleta-premiada-hunter-${new Date().toISOString().split('T')[0]}.json`;
+  const aCampaignLabel = state.campaignName.toLowerCase().includes('pós') ? 'pos' : 'graduacao';
+  a.download = `roleta-premiada-${aCampaignLabel}-hunter-state-${new Date().toISOString().split('T')[0]}.json`;
   a.click();
   URL.revokeObjectURL(url);
 }

@@ -1,7 +1,7 @@
 import ExcelJS from 'exceljs';
 import type { CampaignState } from '../types/campaign';
 
-export async function exportCampaignToExcel(state: CampaignState, campaignType: 'graduacao' | 'pos'): Promise<void> {
+export async function generateCampaignExcelBlob(state: CampaignState, campaignType: 'graduacao' | 'pos'): Promise<Blob> {
   const workbook = new ExcelJS.Workbook();
   const campaignLabel = campaignType === 'pos' ? 'Pós-Graduação' : 'Graduação';
   const worksheet = workbook.addWorksheet(`Premiação - ${campaignLabel}`);
@@ -150,9 +150,12 @@ export async function exportCampaignToExcel(state: CampaignState, campaignType: 
     };
   });
 
-  // Gera Buffer e dispara o Download
   const buffer = await workbook.xlsx.writeBuffer();
-  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  return new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+}
+
+export async function exportCampaignToExcel(state: CampaignState, campaignType: 'graduacao' | 'pos'): Promise<void> {
+  const blob = await generateCampaignExcelBlob(state, campaignType);
   const url = window.URL.createObjectURL(blob);
   
   const a = document.createElement('a');
