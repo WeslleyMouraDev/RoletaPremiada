@@ -19,7 +19,7 @@ export function ResultModal({
   availableBalance,
   onContinue,
 }: ResultModalProps) {
-  const isPrize = Boolean(result && result.prizeAmount > 0 && availableBalance >= result.prizeAmount);
+  const isPrize = Boolean(result && result.prizeAmount > 0);
 
   useEffect(() => {
     if (!isOpen || !isPrize) return;

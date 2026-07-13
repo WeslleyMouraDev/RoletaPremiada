@@ -6,7 +6,7 @@ import type { CampaignState, Consultant } from '../../types/campaign';
 
 type SpinQueueScreenProps = {
   state: CampaignState;
-  onSpin: (consultant: Consultant) => void;
+  onSpin: (consultant: Consultant, autoPlay: boolean) => void;
   onSkip: (consultantId: string) => void;
   onBack: () => void;
   onFinishCampaign: () => void;
@@ -25,6 +25,7 @@ export function SpinQueueScreen({
   const queue = consultants.filter(c => c.pendingSpins > 0);
   const currentConsultant = queue.length > 0 ? queue[0] : null;
   const nextInQueue = queue.slice(1);
+  const totalPendingSpins = queue.reduce((acc, c) => acc + c.pendingSpins, 0);
 
   const handleSkipClick = () => {
     if (!currentConsultant) return;
@@ -136,9 +137,15 @@ export function SpinQueueScreen({
                   <Button variant="secondary" onClick={handleSkipClick} className="flex-1">
                     🚫 Pular Giro
                   </Button>
-                  <Button onClick={() => onSpin(currentConsultant)} className="flex-[2] py-4 text-lg">
-                    🎯 Ir para Roleta
-                  </Button>
+                  {totalPendingSpins > 1 ? (
+                    <Button onClick={() => onSpin(currentConsultant, true)} className="flex-[2] py-4 text-lg">
+                      🎰 Iniciar Giros
+                    </Button>
+                  ) : (
+                    <Button onClick={() => onSpin(currentConsultant, false)} className="flex-[2] py-4 text-lg">
+                      🎯 Ir para Roleta
+                    </Button>
+                  )}
                 </div>
               </Card>
             </div>

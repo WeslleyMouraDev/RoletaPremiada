@@ -47,4 +47,5 @@ export type AppScreen =
   | 'dashboard'
   | 'spin-queue'
   | 'wheel'
+  | 'finished-spins'
   | 'final-summary';

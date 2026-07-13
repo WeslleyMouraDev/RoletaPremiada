@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { GoldTitle } from '../ui/GoldTitle';
 import { Button } from '../ui/Button';
@@ -12,6 +12,7 @@ type PrizeWheelScreenProps = {
   availableBalance: number;
   onSpinComplete: (result: WheelSegment) => void;
   onBack: () => void;
+  autoSpin?: boolean;
 };
 
 const WHEEL_SIZE = 500;
@@ -36,6 +37,7 @@ export function PrizeWheelScreen({
   availableBalance,
   onSpinComplete,
   onBack,
+  autoSpin = false,
 }: PrizeWheelScreenProps) {
   const [isSpinning, setIsSpinning] = useState(false);
   const [hasSpun, setHasSpun] = useState(false);
@@ -98,6 +100,16 @@ export function PrizeWheelScreen({
     }, 1200);
   }, [isSpinning, hasSpun, rotation, segments, availableBalance, controls, playTickSound, playWinSound, playNoWinSound, onSpinComplete]);
 
+  useEffect(() => {
+    if (autoSpin && !isSpinning && !hasSpun) {
+      // Delay pequeno de 2 segundos para o usuário ler as informações do consultor antes de girar
+      const timer = setTimeout(() => {
+        handleSpin();
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [autoSpin, isSpinning, hasSpun, handleSpin]);
+
   return (
     <div className="min-h-screen bg-bg flex flex-col items-center justify-start p-4 md:p-8">
       
@@ -128,6 +140,17 @@ export function PrizeWheelScreen({
           {isEnabled ? '🔊' : '🔇'}
         </button>
       </div>
+
+      {autoSpin && (
+        <div className="w-full max-w-3xl bg-gold/10 border border-gold/20 rounded-2xl p-4 mb-6 text-center animate-pulse z-10">
+          <p className="text-gold font-bold text-xs uppercase tracking-wider">🎯 Giro Automático Ativo</p>
+          <p className="text-white text-sm mt-1 font-semibold">
+            Consultor: <span className="font-bold">{consultant.name}</span> {' · '} 
+            Matrículas: <span className="font-bold">{consultant.totalEnrollments}</span> {' · '} 
+            Giros Restantes: <span className="font-bold">{consultant.pendingSpins}</span>
+          </p>
+        </div>
+      )}
 
       {/* Ponteiro */}
       <div className="relative mb-2 z-10">
