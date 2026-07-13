@@ -85,8 +85,8 @@ function CampaignManager({ campaignType, onExit }: CampaignManagerProps) {
   useEffect(() => {
     if (isAutoPlay && isResultModalOpen && lastResult) {
       const isPrize = lastResult.prizeAmount > 0;
-      // 7.5 segundos se for prêmio para curtir confete/áudio, 3 segundos se for perda
-      const delay = isPrize ? 7500 : 3000;
+      // 5 segundos se for prêmio para curtir confete/áudio, 3 segundos se for perda
+      const delay = isPrize ? 5000 : 3000;
 
       const timer = setTimeout(() => {
         handleResultContinue();
@@ -117,7 +117,7 @@ function CampaignManager({ campaignType, onExit }: CampaignManagerProps) {
     if (screen === 'finished-spins') {
       const timer = setTimeout(() => {
         setScreen('final-summary');
-      }, 5000);
+      }, 10000);
       return () => clearTimeout(timer);
     }
   }, [screen]);
