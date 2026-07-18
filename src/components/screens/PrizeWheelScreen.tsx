@@ -42,6 +42,7 @@ export function PrizeWheelScreen({
   const [isSpinning, setIsSpinning] = useState(false);
   const [hasSpun, setHasSpun] = useState(false);
   const [rotation, setRotation] = useState(0);
+  const [reSpinMessage, setReSpinMessage] = useState<string | null>(null);
   const controls = useAnimation();
   const resultRef = useRef<WheelSegment | null>(null);
   const { playTickSound, playWinSound, playNoWinSound, isEnabled, toggleSound } = useSoundEffects();
@@ -85,16 +86,34 @@ export function PrizeWheelScreen({
 
     clearInterval(tickInterval);
     setRotation(totalRotation % 360);
+
+    // Se o prêmio for maior que o saldo, gira novamente
+    if (result.prizeAmount > availableBalance) {
+      playNoWinSound();
+      setIsSpinning(false);
+      setReSpinMessage(`O prêmio de R$ ${result.prizeAmount} é maior que o saldo restante de R$ ${availableBalance}. Girando a roleta novamente...`);
+      
+      setTimeout(() => {
+        setReSpinMessage(null);
+        setHasSpun(false);
+        // Pequeno delay para garantir que os estados atualizaram antes de iniciar
+        setTimeout(() => {
+          handleSpin();
+        }, 100);
+      }, 3000);
+      return;
+    }
+
     setIsSpinning(false);
     setHasSpun(true);
 
-    if (result.prizeAmount > 0 && availableBalance >= result.prizeAmount) {
+    if (result.prizeAmount > 0) {
       playWinSound();
     } else {
       playNoWinSound();
     }
 
-    // Aguardar 1 segundo para o usuário ver o resultado antes de fechar
+    // Aguardar 1.2 segundos para o usuário ver o resultado antes de fechar
     setTimeout(() => {
       onSpinComplete(result);
     }, 1200);
@@ -148,6 +167,14 @@ export function PrizeWheelScreen({
             Consultor: <span className="font-bold">{consultant.name}</span> {' · '} 
             Matrículas: <span className="font-bold">{consultant.totalEnrollments}</span> {' · '} 
             Giros Restantes: <span className="font-bold">{consultant.pendingSpins}</span>
+          </p>
+        </div>
+      )}
+
+      {reSpinMessage && (
+        <div className="w-full max-w-3xl bg-[#DC2626]/80 border border-[#DC2626]/20 rounded-2xl p-4 mb-6 text-center animate-pulse z-10 shadow-lg">
+          <p className="text-white font-bold text-sm">
+            ⚠️ {reSpinMessage}
           </p>
         </div>
       )}

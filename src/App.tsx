@@ -66,7 +66,12 @@ function CampaignManager({ campaignType, onExit }: CampaignManagerProps) {
     setIsResultModalOpen(false);
     setLastResult(null);
     setCurrentConsultant(null);
-    setScreen('spin-queue');
+    if (state.availableBalance === 0) {
+      setIsAutoPlay(false);
+      setScreen('finished-spins');
+    } else {
+      setScreen('spin-queue');
+    }
   };
 
   const handleWheelBack = () => {
@@ -112,7 +117,7 @@ function CampaignManager({ campaignType, onExit }: CampaignManagerProps) {
     }
   }, [isAutoPlay, screen, state.consultants]);
 
-  // Redirecionamento da tela de giros finalizados para o resumo final (5s)
+  // Redirecionamento da tela de giros finalizados para o resumo final (10s)
   useEffect(() => {
     if (screen === 'finished-spins') {
       const timer = setTimeout(() => {
@@ -121,6 +126,14 @@ function CampaignManager({ campaignType, onExit }: CampaignManagerProps) {
       return () => clearTimeout(timer);
     }
   }, [screen]);
+
+  // Se o saldo acabar, encerra e conclui a campanha imediatamente
+  useEffect(() => {
+    if (state.availableBalance === 0 && screen === 'spin-queue') {
+      setIsAutoPlay(false);
+      setScreen('finished-spins');
+    }
+  }, [state.availableBalance, screen]);
 
   return (
     <div className="min-h-screen bg-bg flex flex-col">
