@@ -5,23 +5,29 @@ import { exportCampaignJson, importCampaignJson } from '../services/campaignExpo
 import type { CampaignState, Consultant, SpinHistoryItem, WheelSegment } from '../types/campaign';
 
 
+import { normalizeConsultantName } from '../utils/normalize';
+
 export function useCampaignState(campaignType: 'graduacao' | 'pos') {
   const storageKey = `roleta_premiada_hunter_${campaignType}`;
   const [state, setState] = useLocalStorage<CampaignState>(storageKey, createInitialState(campaignType));
 
   const addConsultant = useCallback((name: string, enrollments: number) => {
+    const normalizedInputName = normalizeConsultantName(name);
+    if (!normalizedInputName || enrollments <= 0) return;
+
     setState(prev => {
       const existing = prev.consultants.find(
-        c => c.name.trim().toLowerCase() === name.trim().toLowerCase()
+        c => normalizeConsultantName(c.name) === normalizedInputName
       );
       if (existing) {
-        // Acumula matrículas
+        // Acumula matrículas e atualiza o nome para o formato normalizado se necessário
         return {
           ...prev,
           consultants: prev.consultants.map(c =>
             c.id === existing.id
               ? {
                   ...c,
+                  name: normalizedInputName,
                   totalEnrollments: c.totalEnrollments + enrollments,
                   totalSpins: c.totalSpins + enrollments,
                   pendingSpins: c.pendingSpins + enrollments,
@@ -33,7 +39,7 @@ export function useCampaignState(campaignType: 'graduacao' | 'pos') {
       }
       const newConsultant: Consultant = {
         id: crypto.randomUUID(),
-        name: name.trim(),
+        name: normalizedInputName,
         totalEnrollments: enrollments,
         totalSpins: enrollments,
         completedSpins: 0,

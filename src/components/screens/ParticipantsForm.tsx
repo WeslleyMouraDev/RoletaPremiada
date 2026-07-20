@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
+import { normalizeConsultantName } from '../../utils/normalize';
 
 type ParticipantsFormProps = {
   onAddConsultant: (name: string, enrollments: number) => void;
@@ -12,8 +13,9 @@ export function ParticipantsForm({ onAddConsultant }: ParticipantsFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || enrollments <= 0) return;
-    onAddConsultant(name, enrollments);
+    const normalized = normalizeConsultantName(name);
+    if (!normalized || enrollments <= 0) return;
+    onAddConsultant(normalized, enrollments);
     setName('');
     setEnrollments(1);
   };
