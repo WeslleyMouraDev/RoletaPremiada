@@ -5,19 +5,26 @@ import type { WheelSegment } from '../types/campaign';
  * Se saldo < menor prêmio, force "Não foi dessa vez".
  */
 export function calculateResult(
-  _availableBalance: number,
+  availableBalance: number,
   segments: WheelSegment[]
 ): WheelSegment {
-  // Sorteia puramente entre todos os segmentos, independente do saldo
-  const totalWeight = segments.reduce((sum, s) => sum + s.weight, 0);
+  // Filtra segmentos válidos que não extrapolam a verba e não deixam saldo de R$ 10
+  const eligible = segments.filter(s => {
+    const remaining = availableBalance - s.prizeAmount;
+    if (s.prizeAmount > availableBalance) return false;
+    if (remaining === 10 && s.prizeAmount > 0) return false;
+    return true;
+  });
+
+  const totalWeight = eligible.reduce((sum, s) => sum + s.weight, 0);
   let rand = Math.random() * totalWeight;
 
-  for (const seg of segments) {
+  for (const seg of eligible) {
     rand -= seg.weight;
     if (rand <= 0) return seg;
   }
 
-  return segments[segments.length - 1];
+  return eligible[eligible.length - 1];
 }
 
 /**
